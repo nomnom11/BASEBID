@@ -3,6 +3,7 @@ import { maybeDb } from "@/lib/db";
 import { chainIdOf, type ChainKey } from "@/lib/chainPublic";
 import { DEAD_ADDR, TOP_HOLDERS, ZERO_ADDR, creatorActivity, holderTags, shareBps, sniperSummary, trustNotes, type HolderTag } from "./holders";
 import { systemAddresses } from "./indexer";
+import { LAUNCH_VISIBLE_FROM } from "./visibility";
 
 export type HolderRow = { address: string; balance: string; bps: number; tags: HolderTag[] };
 export type HolderPanel = {
@@ -24,7 +25,7 @@ export async function getHolderPanel(chain: ChainKey, token: string): Promise<Ho
   const cid = chainIdOf(chain);
   const t = token.toLowerCase();
   const [l] = await db<{ launcher: string; supply: string; block_number: bigint; holders: number; holders_synced_block: bigint | null }[]>`
-    SELECT launcher, supply::text AS supply, block_number, holders, holders_synced_block FROM bb_launches WHERE chain_id = ${cid} AND token = ${t}`;
+    SELECT launcher, supply::text AS supply, block_number, holders, holders_synced_block FROM bb_launches WHERE chain_id = ${cid} AND token = ${t} ${LAUNCH_VISIBLE_FROM ? db`AND block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}`;
   if (!l) return null;
   const supply = BigInt(l.supply);
   const system = systemAddresses(chain);

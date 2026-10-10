@@ -19,23 +19,23 @@
   --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
   /* surfaces */
-  --color-paper: #fafaf8;
+  --color-paper: #f1f6ff;
   --color-card: #ffffff;
   --color-raised: #ffffff; /* floating layers: search, menus, sheets, dialogs */
-  --color-line: #e7e5e4;
-  --color-line-strong: #d6d3d1;
+  --color-line: #dbe5f5;
+  --color-line-strong: #c4d3ea;
 
   /* text */
-  --color-ink: #0f172a;
+  --color-ink: #10213a;
   --color-body: #475569;
   --color-muted: #64748b; /* AA on paper/card at body sizes */
   --color-faint: #94a3b8; /* decorative / placeholders only */
   --color-inverse: #ffffff; /* text on ink / brand / up / down fills */
-  --color-skeleton: #ecebe8;
-  --color-skeleton-highlight: #f5f4f1;
+  --color-skeleton: #e5edfa;
+  --color-skeleton-highlight: #f1f6ff;
 
   /* accent */
-  --color-brand: #0052ff;
+  --color-brand: #145dff;
   --color-brand-strong: #0041cc;
   --color-brand-soft: #eaf0ff;
 
@@ -124,21 +124,21 @@
    and green brighten because the light values drop under 3:1 on black. ── */
 .dark {
   color-scheme: dark;
-  --color-paper: #000000;
-  --color-card: #0a0a0a;
-  --color-raised: #141414; /* one step up from card, so a floating layer reads without a shadow */
-  --color-line: #1f1f1f;
-  --color-line-strong: #333333;
+  --color-paper: #071426;
+  --color-card: #0c1b30;
+  --color-raised: #12243b; /* one step up from card, so a floating layer reads without a shadow */
+  --color-line: #233854;
+  --color-line-strong: #344d70;
   --color-ink: #ffffff;
   --color-body: #b3b3b3;   /* white .70 */
   --color-muted: #8c8c8c;  /* white .55 */
   --color-faint: #666666;  /* white .40 */
-  --color-inverse: #000000;
-  --color-skeleton: #141414;
-  --color-skeleton-highlight: #1f1f1f;
-  --color-brand: #4d8bff;
-  --color-brand-strong: #7aa6ff;
-  --color-brand-soft: #0d1b33;
+  --color-inverse: #071426;
+  --color-skeleton: #12243b;
+  --color-skeleton-highlight: #233854;
+  --color-brand: #4f8cff;
+  --color-brand-strong: #8bb8ff;
+  --color-brand-soft: #10294a;
   --color-up: #05df72;
   --color-up-soft: #06241a;
   --color-down: #ff6b6b;
@@ -149,20 +149,20 @@
   --color-warm-soft: #2a2007;
   --color-holder-good-line: #0d5233;
   --color-holder-good-bg: #06241a;
-  --color-chart-grid: #1a1a1a;
-  --color-chart-vol: #333333;
+  --color-chart-grid: #1b2e49;
+  --color-chart-vol: #344d70;
   --color-dim: #8c8c8c;
-  --color-glow: #4d8bff;
+  --color-glow: #4f8cff;
   --color-glow-soft: rgb(77 139 255 / 0.09);
-  --color-track: #000000;
-  --color-thumb: #232323;
-  --color-scrim: #000000;
-  --shadow-card: 0 1px 2px #00000026, 0 4px 16px #00000026;
-  --shadow-card-hover: 0 2px 4px #00000033, 0 10px 28px #00000040;
-  --shadow-sheet: 0 -8px 40px #00000066;
-  --shadow-dialog: 0 24px 64px #00000080;
-  --shadow-track: inset 0 0 0 1px #1f1f1f, inset 0 1px 2px #00000099;
-  --shadow-thumb: inset 0 1px 0 #ffffff17, 0 0 0 1px #ffffff0d, 0 2px 6px -1px #000000b3;
+  --color-track: #071426;
+  --color-thumb: #1a2d47;
+  --color-scrim: #071426;
+  --shadow-card: 0 1px 2px #07142626, 0 4px 16px #07142626;
+  --shadow-card-hover: 0 2px 4px #07142633, 0 10px 28px #07142640;
+  --shadow-sheet: 0 -8px 40px #07142666;
+  --shadow-dialog: 0 24px 64px #07142680;
+  --shadow-track: inset 0 0 0 1px #233854, inset 0 1px 2px #07142699;
+  --shadow-thumb: inset 0 1px 0 #ffffff17, 0 0 0 1px #ffffff0d, 0 2px 6px -1px #071426b3;
 }
 
 /* Black paper does not print: a class-based theme survives into the print

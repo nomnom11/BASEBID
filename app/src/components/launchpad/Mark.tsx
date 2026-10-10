@@ -1,10 +1,10 @@
 /**
- * The openlaunch mark: brand-blue tile, white geometric "oL" — same family as
+ * The Basebid mark: brand-blue tile, white geometric "oL" — same family as
  * the old basebid "b" tile. Plain SVG: usable in server components, the OG
  * image and favicons. `tile=false` draws the letters alone (ink/brand) for
  * light backgrounds.
  */
-export default function Mark({ size = 24, className = "", title = "openlaunch", tile = true, color = "#FFFFFF" }: { size?: number; className?: string; title?: string; tile?: boolean; color?: string }) {
+export default function Mark({ size = 24, className = "", title = "Basebid", tile = true, color = "#FFFFFF" }: { size?: number; className?: string; title?: string; tile?: boolean; color?: string }) {
   const fg = tile ? "#FFFFFF" : color;
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" className={className} role="img" aria-label={title}>
@@ -16,11 +16,11 @@ export default function Mark({ size = 24, className = "", title = "openlaunch", 
   );
 }
 
-/** Wordmark: "openlaunch" + ".lol" in brand blue. */
+/** Wordmark: "Basebid" + ".lol" in brand blue. */
 export function Wordmark({ className = "", size = 15 }: { className?: string; size?: number }) {
   return (
     <span className={`font-semibold tracking-tight text-ink ${className}`} style={{ fontSize: size }}>
-      openlaunch<span className="text-brand">.lol</span>
+      Basebid<span className="text-brand">.lol</span>
     </span>
   );
 }

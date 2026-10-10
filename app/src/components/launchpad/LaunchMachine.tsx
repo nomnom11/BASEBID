@@ -126,7 +126,18 @@ export default function LaunchMachine({ coin = null, eyebrow }: { coin?: { key: 
             {[-40, -30, -20, -10, 0, 10, 20, 30, 40].map((n) => <path key={n} d={`M${280 + n} ${106 + 23 * Math.sqrt(1 - (n / 52) ** 2)}v-12`} className={styles.tokenRidge} />)}
             <ellipse cx="280" cy="88" rx="52" ry="23" className={styles.tokenTop} />
             <ellipse cx="280" cy="88" rx="43" ry="18" className={styles.tokenRing} />
-            <g transform="matrix(.86 .38 -.86 .38 280 87)"><path d="M-22 -14H-4V14H-22ZM6 -14V14H24" className={styles.tokenMark} /></g>
+            <g transform="translate(280 88) scale(1 .4186)">
+  <image
+    href="/basebid-logo.png"
+    x="-43"
+    y="-43"
+    width="86"
+    height="86"
+    preserveAspectRatio="xMidYMid meet"
+  />
+</g>
+
+
             {/* a real launch's picture, upright and foreshortened to the coin's inner ring (43 x 18); it rides the coin down into the pool */}
             {coin ? (
               <g transform="translate(280 88) scale(1 .4186)">

@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { maybeDb } from "@/lib/db";
+import { LAUNCH_VISIBLE_FROM } from "./visibility";
 import { CHAIN_KEYS, DEFAULT_CHAIN, chainIdOf, chainKeyOf, type ChainKey } from "@/lib/chainPublic";
 import { quoteInfo as staticQuoteInfo, quoteUsdOf, type Quote, NATIVE_QUOTES, fixedUsdQuotes, quotesWithKey } from "./config";
 import { ensureRegistry, stockByAddress, stockList, stockUsdInUse } from "./stocksServer";
@@ -307,6 +308,7 @@ export async function listLaunchesPage(opts: ListOpts = {}): Promise<ListPage> {
   // stock quotes: per-address USD factors known this request (empty → treated like unknown = 0 weight in USD sorts)
   const stockEntries = [...stockUsdNow.entries()].filter(([, v]) => v !== null && v > 0) as [string, number][];
   const conds = [] as ReturnType<typeof db>[];
+  if (LAUNCH_VISIBLE_FROM) conds.push(db`l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz`);
   if (opts.chain) conds.push(db`l.chain_id = ${chainIdOf(opts.chain)}`);
   if (opts.launcher) conds.push(db`l.launcher = ${opts.launcher.toLowerCase()}`);
   if (opts.filter === "fee0") conds.push(db`l.lp_fee = 0`);
@@ -390,7 +392,7 @@ export async function getLaunch(chain: ChainKey, token: string, ethUsd: number |
   const db = maybeDb();
   if (!db) return null;
   await withStocks();
-  const rows = await db<Raw[]>`${db.unsafe(SELECT)} WHERE l.chain_id = ${chainIdOf(chain)} AND l.token = ${token.toLowerCase()}`;
+  const rows = await db<Raw[]>`${db.unsafe(SELECT)} WHERE l.chain_id = ${chainIdOf(chain)} AND l.token = ${token.toLowerCase()}${LAUNCH_VISIBLE_FROM ? db` AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}`;
   return rows[0] ? shape(rows[0], ethUsd) : null;
 }
 
@@ -402,7 +404,7 @@ export async function getLaunchesByRefs(refs: readonly { chain: ChainKey; token:
   await withStocks();
   const matches = refs.map((ref) => db`(l.chain_id = ${chainIdOf(ref.chain)} AND l.token = ${ref.token.toLowerCase()})`);
   const rows = await db<(Raw & { holders_synced_block: bigint | null })[]>`
-    ${db.unsafe(SELECT)} WHERE ${matches.reduce((a, b) => db`${a} OR ${b}`)}`;
+    ${db.unsafe(SELECT)} WHERE (${matches.reduce((a, b) => db`${a} OR ${b}`)})${LAUNCH_VISIBLE_FROM ? db` AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}`;
   return rows.map((r) => ({
     launch: shape(r, ethUsd),
     // Same completed-backfill sentinel as getHolderPanel. An unfinished index is not zero holders.
@@ -414,7 +416,7 @@ export async function getLaunchesByRefs(refs: readonly { chain: ChainKey; token:
 export async function findLaunchChain(token: string): Promise<ChainKey | null> {
   const db = maybeDb();
   if (!db) return null;
-  const rows = await db<{ chain_id: number }[]>`SELECT chain_id FROM bb_launches WHERE token = ${token.toLowerCase()} ORDER BY block_time DESC, chain_id DESC, block_number DESC LIMIT 1`;
+  const rows = await db<{ chain_id: number }[]>`SELECT chain_id FROM bb_launches WHERE token = ${token.toLowerCase()}${LAUNCH_VISIBLE_FROM ? db` AND block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``} ORDER BY block_time DESC, chain_id DESC, block_number DESC LIMIT 1`;
   return rows[0] ? chainKeyOf(rows[0].chain_id) : null;
 }
 
@@ -424,8 +426,11 @@ export async function getSwaps(chain: ChainKey, token: string, quoteDecimals: nu
   const db = maybeDb();
   if (!db) return [];
   const rows = await db<{ tx_hash: string; log_index: number; token: string; trader: string | null; amount0: string; amount1: string; is_buy: boolean; block_time: string; sqrt_price_x96: string }[]>`
-    SELECT tx_hash, log_index, token, trader, amount0, amount1, is_buy, block_time, sqrt_price_x96 FROM bb_launch_swaps
-    WHERE chain_id = ${chainIdOf(chain)} AND token = ${token.toLowerCase()} ORDER BY block_number DESC, log_index DESC LIMIT ${Math.min(200, limit)}`;
+    SELECT s.tx_hash, s.log_index, s.token, s.trader, s.amount0, s.amount1, s.is_buy, s.block_time, s.sqrt_price_x96 FROM bb_launch_swaps s
+    JOIN bb_launches l ON l.chain_id = s.chain_id AND l.token = s.token
+    WHERE s.chain_id = ${chainIdOf(chain)} AND s.token = ${token.toLowerCase()}
+      ${LAUNCH_VISIBLE_FROM ? db`AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz AND s.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
+    ORDER BY s.block_number DESC, s.log_index DESC LIMIT ${Math.min(200, limit)}`;
   return rows.map((r) => ({ ...r, price_quote: quotePerToken(BigInt(r.sqrt_price_x96), quoteDecimals) }));
 }
 
@@ -473,6 +478,7 @@ export async function getLaunchFeed(limit = 24, ethUsd: number | null = null): P
     db<{ chain_id: number; at: string; tx_hash: string; token: string; name: string; symbol: string; quote: string; launcher: string | null; lp_fee: number | null; image_url: string | null }[]>`
       SELECT l.chain_id, l.block_time AS at, l.tx_hash, l.token, l.name, l.symbol, l.quote, l.launcher, l.lp_fee, m.image_url
         FROM bb_launches l LEFT JOIN bb_launch_meta m ON m.chain_id = l.chain_id AND m.token = l.token
+        ${LAUNCH_VISIBLE_FROM ? db`WHERE l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
         ORDER BY l.block_time DESC LIMIT ${n}`,
     // Dust (feed-dust.ts) is priced and dropped after the read, so swaps come in pages: the newest 2n first, older pages
     // only while dust keeps the count short. Each page is a keyset read on the complete unique ordering
@@ -486,6 +492,7 @@ export async function getLaunchFeed(limit = 24, ethUsd: number | null = null): P
                       ${after ? db`WHERE block_time <= ${after.at} AND (block_time, log_index, chain_id, tx_hash) < (${after.at}, ${after.log_index}, ${chainIdOf(after.chain)}, ${after.tx_hash})` : db``}
                       ORDER BY block_time DESC, log_index DESC, chain_id DESC, tx_hash DESC LIMIT ${size}) s
               JOIN bb_launches l ON l.chain_id = s.chain_id AND l.token = s.token LEFT JOIN bb_launch_meta m ON m.chain_id = l.chain_id AND m.token = l.token
+              ${LAUNCH_VISIBLE_FROM ? db`WHERE l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz AND s.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
               ORDER BY s.block_time DESC, s.log_index DESC, s.chain_id DESC, s.tx_hash DESC`
         ).map(shapeSwap),
       n,
@@ -541,7 +548,7 @@ export async function getLaunchTotals(ethUsd: number | null = null): Promise<Lau
     SELECT chain_id, quote, count(*)::bigint AS launches, COALESCE(sum(buys + sells), 0)::bigint AS trades,
            COALESCE(sum(volume_quote), 0)::text AS volume, COALESCE(sum(fees_quote_burned), 0)::text AS burned,
            COALESCE(sum(fees_quote_collected - fees_quote_burned), 0)::text AS creators
-      FROM bb_launches GROUP BY chain_id, quote`;
+      FROM bb_launches ${LAUNCH_VISIBLE_FROM ? db`WHERE block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``} GROUP BY chain_id, quote`;
   const t = empty();
   const add = (a: string, b: string) => (BigInt(a) + BigInt(b)).toString();
   for (const r of rows) {
@@ -614,13 +621,16 @@ export async function searchLaunches(q: string, opts: { chain?: ChainKey | null;
   await withStocks();
   const limit = Math.min(50, Math.max(1, opts.limit ?? 20));
   const chainCond = opts.chain ? db`AND l.chain_id = ${chainIdOf(opts.chain)}` : db``;
+  const visibilityCond = LAUNCH_VISIBLE_FROM
+    ? db`AND l.block_time >= ${LAUNCH_VISIBLE_FROM}`
+    : db``;
   const rows = isAddressQuery(n)
-    ? await db<Raw[]>`${db.unsafe(SELECT)} WHERE l.token = ${n} ${chainCond}`
+    ? await db<Raw[]>`${db.unsafe(SELECT)} WHERE l.token = ${n} ${chainCond} ${visibilityCond}`
     // LIKE metacharacters in n are escaped (ESCAPE '\'): a search for "%" or
     // "_" matches those literal characters, not every row. Pre-limit orders by
     // block time — never raw block numbers across chains (Base heights dwarf
     // Robinhood's, so the old ORDER BY hid exact matches on the low chain).
-    : await db<Raw[]>`${db.unsafe(SELECT)} WHERE (l.name ILIKE ${"%" + escapeLike(n) + "%"} ESCAPE '\\' OR l.symbol ILIKE ${"%" + escapeLike(n) + "%"} ESCAPE '\\') ${chainCond} ORDER BY l.block_time DESC, l.chain_id DESC, l.block_number DESC LIMIT 200`;
+    : await db<Raw[]>`${db.unsafe(SELECT)} WHERE (l.name ILIKE ${"%" + escapeLike(n) + "%"} ESCAPE '\\' OR l.symbol ILIKE ${"%" + escapeLike(n) + "%"} ESCAPE '\\') ${chainCond} ${visibilityCond} ORDER BY l.block_time DESC, l.chain_id DESC, l.block_number DESC LIMIT 200`;
   const shaped = rows.map((r) => shape(r, opts.ethUsd ?? null));
   shaped.sort((a, b) => (opts.order === "holders" ? compareSearchHitByHolders(a, b, n) : compareSearchHit(a, b, n)));
   return shaped.slice(0, limit);
@@ -641,9 +651,10 @@ export async function getCandles(chain: ChainKey, token: string, intervalS: numb
       SELECT floor(extract(epoch FROM block_time) / ${intervalS})::bigint * ${intervalS} AS t,
              1.0 / (power(sqrt_price_x96::double precision / 79228162514264337593543950336.0, 2) * ${scale}) AS p,
              abs(amount0) AS v, block_number, log_index
-        FROM bb_launch_swaps
-       WHERE chain_id = ${chainIdOf(chain)} AND token = ${token.toLowerCase()}
-         AND block_time >= to_timestamp(${from}) AND block_time <= to_timestamp(${asOf})
+        FROM bb_launch_swaps s JOIN bb_launches l ON l.chain_id = s.chain_id AND l.token = s.token
+       WHERE s.chain_id = ${chainIdOf(chain)} AND s.token = ${token.toLowerCase()}
+         AND s.block_time >= to_timestamp(${from}) AND s.block_time <= to_timestamp(${asOf})
+         ${LAUNCH_VISIBLE_FROM ? db`AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz AND s.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
     )
     SELECT t::int AS t,
            (array_agg(p ORDER BY block_number, log_index))[1] AS open,
@@ -663,10 +674,11 @@ export async function getCandleBaseline(chain: ChainKey, token: string, from: nu
   const db = maybeDb();
   if (!db) return null;
   const rows = await db<{ sqrt_price_x96: string }[]>`
-    SELECT sqrt_price_x96 FROM bb_launch_swaps
-     WHERE chain_id = ${chainIdOf(chain)} AND token = ${token.toLowerCase()}
-       AND block_time < to_timestamp(${from})
-     ORDER BY block_number DESC, log_index DESC LIMIT 1`;
+    SELECT s.sqrt_price_x96 FROM bb_launch_swaps s JOIN bb_launches l ON l.chain_id = s.chain_id AND l.token = s.token
+     WHERE s.chain_id = ${chainIdOf(chain)} AND s.token = ${token.toLowerCase()}
+       AND s.block_time < to_timestamp(${from})
+       ${LAUNCH_VISIBLE_FROM ? db`AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz AND s.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
+     ORDER BY s.block_number DESC, s.log_index DESC LIMIT 1`;
   return rows[0] ? quotePerToken(BigInt(rows[0].sqrt_price_x96), quoteDecimals) : null;
 }
 
@@ -676,10 +688,11 @@ export async function getWalletSwaps(chain: ChainKey, token: string, wallet: str
   const db = maybeDb();
   if (!db) return [];
   const rows = await db<{ t: number; is_buy: boolean; quote: string }[]>`
-    SELECT extract(epoch FROM block_time)::int AS t, is_buy, abs(amount0)::text AS quote FROM bb_launch_swaps
-     WHERE chain_id = ${chainIdOf(chain)} AND token = ${token.toLowerCase()} AND trader = ${wallet.toLowerCase()}
-       AND block_time <= to_timestamp(${asOf})
-     ORDER BY block_number DESC, log_index DESC LIMIT ${Math.min(500, limit)}`;
+    SELECT extract(epoch FROM s.block_time)::int AS t, s.is_buy, abs(s.amount0)::text AS quote FROM bb_launch_swaps s JOIN bb_launches l ON l.chain_id = s.chain_id AND l.token = s.token
+     WHERE s.chain_id = ${chainIdOf(chain)} AND s.token = ${token.toLowerCase()} AND s.trader = ${wallet.toLowerCase()}
+       AND s.block_time <= to_timestamp(${asOf})
+       ${LAUNCH_VISIBLE_FROM ? db`AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz AND s.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
+     ORDER BY s.block_number DESC, s.log_index DESC LIMIT ${Math.min(500, limit)}`;
   return rows.map((r) => ({ t: Number(r.t), is_buy: r.is_buy, quote: r.quote }));
 }
 
@@ -695,6 +708,7 @@ export async function getWalletTokens(wallet: string, ethUsd: number | null = nu
       SELECT count(*) FILTER (WHERE is_buy)::bigint AS my_buys, count(*) FILTER (WHERE NOT is_buy)::bigint AS my_sells, max(block_time) AS my_last_trade
         FROM bb_launch_swaps s WHERE s.chain_id = l.chain_id AND s.token = l.token AND s.trader = ${w}
     ) mine ON mine.my_buys + mine.my_sells > 0
+    ${LAUNCH_VISIBLE_FROM ? db`WHERE l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
     ORDER BY mine.my_last_trade DESC LIMIT ${Math.min(200, limit)}`;
   return rows.map((r) => ({ ...shape(r, ethUsd), my_buys: Number(r.my_buys), my_sells: Number(r.my_sells), my_last_trade: r.my_last_trade }));
 }
@@ -708,7 +722,9 @@ export async function getWalletTrades(wallet: string, ethUsd: number | null = nu
   const rows = await db<{ chain_id: number; token: string; symbol: string; name: string; quote: string; tx_hash: string; log_index: number; is_buy: boolean; amount0: string; amount1: string; block_time: string }[]>`
     SELECT s.chain_id, s.token, l.symbol, l.name, l.quote, s.tx_hash, s.log_index, s.is_buy, s.amount0, s.amount1, s.block_time
       FROM bb_launch_swaps s JOIN bb_launches l ON l.chain_id = s.chain_id AND l.token = s.token
-     WHERE s.trader = ${wallet.toLowerCase()} ORDER BY s.block_number DESC, s.log_index DESC LIMIT ${Math.min(200, limit)}`;
+     WHERE s.trader = ${wallet.toLowerCase()}
+       ${LAUNCH_VISIBLE_FROM ? db`AND l.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz AND s.block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}
+     ORDER BY s.block_number DESC, s.log_index DESC LIMIT ${Math.min(200, limit)}`;
   return rows.map((r) => {
     const chain = chainKeyOf(r.chain_id) ?? DEFAULT_CHAIN;
     const q = quoteInfo(chain, r.quote);

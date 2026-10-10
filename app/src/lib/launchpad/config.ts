@@ -71,7 +71,7 @@ const V4_BY_CHAIN: Record<ChainKey, V4> = {
   },
 };
 /** Quote assets offered per chain, first = default. On Base TWIG took GITLAWB's place (GITLAWB stays an official quote below). */
-const QUOTES_BY_CHAIN: Record<ChainKey, Quote[]> = { base: [ETH, TWIG], robinhood: [USDG, ETH, GITLAWB_RH], arc: [USDC_ARC] };
+const QUOTES_BY_CHAIN: Record<ChainKey, Quote[]> = { base: [ETH, TWIG,MUSEWORLD], robinhood: [USDG, ETH, GITLAWB_RH], arc: [USDC_ARC] };
 /**
  * Official quotes: known, badged and priced wherever a launch paired with them is listed, but NEVER offered in the
  * launch form. Kept out of QUOTES_BY_CHAIN on purpose. GITLAWB on Base: the form offers TWIG (its 1:1 wrapper) instead,
@@ -216,7 +216,7 @@ export const FEE_PRESETS = [
 ] as const;
 
 /** Starting market cap presets per quote (fully diluted, in quote units). */
-export const MCAP_PRESETS: Record<Quote["key"], number[]> = { eth: [1, 5, 10, 25], usdg: [5_000, 10_000, 25_000, 100_000], usdc: [5_000, 10_000, 25_000, 100_000], gitlawb: [] /* derived from the live price */, twig: [] /* derived from the live price */, museworld: [] /* not offered in the form */, stock: [] /* derived from the live price */, other: [] /* never offered */ };
+export const MCAP_PRESETS: Record<Quote["key"], number[]> = { eth: [1, 5, 10, 25], usdg: [5_000, 10_000, 25_000, 100_000], usdc: [5_000, 10_000, 25_000, 100_000], gitlawb: [] /* derived from the live price */, twig: [] /* derived from the live price */,museworld: [5000, 10000, 25000, 100000], stock: [] /* derived from the live price */, other: [] /* never offered */ };
 /** Buy amount presets per quote. */
 export const BUY_PRESETS: Record<Quote["key"], string[]> = { eth: ["0.01", "0.05", "0.1", "0.5"], usdg: ["5", "25", "100", "500"], usdc: ["5", "25", "100", "500"], gitlawb: ["100000", "500000", "1000000", "5000000"], twig: ["100000", "500000", "1000000", "5000000"] /* one TWIG = one GITLAWB */, museworld: ["50000", "100000", "500000", "1000000"], stock: ["0.1", "0.5", "1", "5"], other: [] /* unknown token, unknown scale */ };
 

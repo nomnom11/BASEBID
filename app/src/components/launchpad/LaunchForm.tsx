@@ -465,7 +465,7 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
         <ul className="space-y-1 text-xs text-warm-ink">
           {errors.map((e) => (
             <li key={e} className="flex gap-2">
-              <span aria-hidden className="mt-[5px] size-1 shrink-0 rounded-full bg-warm" />
+              <span aria-hidden className="mt-1.25 size-1 shrink-0 rounded-full bg-warm" />
               {e}
             </li>
           ))}
@@ -558,11 +558,40 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
                     {/* the picked quote key, not the resolved quote: with Stock chosen and no stock yet, the quote still falls back to the first one */}
                     {quoteKey === "stock" ? (CHAIN_COPY[chain].stock?.pays ?? "") : quote.key === "usdg" || quote.key === "usdc" ? `Buyers pay with ${quote.symbol}; market cap and fees are in dollars.` : isBrandQuote ? `Buyers pay with ${quote.symbol}; fees are paid in ${quote.symbol}, or burned.` : "Buyers pay with ETH."}
                   </p>
-                  {brandQuote && quote.key !== brandQuote.key ? (
-                    <button type="button" onClick={() => { setQuoteKey(brandQuote.key); setMcapPick(null); setCustomMcap(""); }} className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink motion-reduce:transition-none" title={`Pair with ${brandQuote.symbol} and your token carries the ${brandQuote.symbol} badge everywhere on the site`}>
-                      Pair with {brandQuote.symbol}, get the <QuoteBrandBadge quoteKey={brandQuote.key} /> badge
-                    </button>
-                  ) : null}
+                  
+{brandQuote && quote.key !== brandQuote.key ? (
+  <button
+    type="button"
+    onClick={() => {
+      setQuoteKey(brandQuote.key);
+      setMcapPick(null);
+      setCustomMcap("");
+    }}
+    className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink motion-reduce:transition-none"
+    title={`Pair with ${brandQuote.symbol} and your token carries the ${brandQuote.symbol} badge everywhere on the site`}
+  >
+    Pair with {brandQuote.symbol}, get the{" "}
+    <QuoteBrandBadge quoteKey={brandQuote.key} /> badge
+  </button>
+) : null}
+
+{chain === "base" &&
+quote.key !== "museworld" &&
+cfg.quotes.some((q) => q.key === "museworld") ? (
+  <button
+    type="button"
+    onClick={() => {
+      setQuoteKey("museworld");
+      setMcapPick(null);
+      setCustomMcap("");
+    }}
+    className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink motion-reduce:transition-none"
+    title="Pair with MUSEWORLD and show the MUSEWORLD badge on your token"
+  >
+    Pair with MUSEWORLD, get the{" "}
+    <QuoteBrandBadge quoteKey="museworld" /> badge
+  </button>
+) : null}
                 </div>
               ) : null}
               {isBrandQuote ? (
@@ -964,7 +993,7 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
       </form>
 
       {/* the console: the preview, what the launch sets, and on wide screens the launch button, always in reach */}
-      <aside className="lg:sticky lg:top-20 min-w-0 order-first lg:order-none">
+      <aside className="lg:sticky lg:top-20 min-w-0 order-first lg:order-0">
         <div className={`${card} p-4`}>
           <LaunchPreview row={previewRow} />
           <div className="mt-4 flex items-center justify-between gap-2 border-t border-line pt-4">
@@ -1026,13 +1055,41 @@ function Step({ n, done, last = false, icon, children }: { n: number; done: bool
 function QuoteMark({ k }: { k: Quote["key"] }) {
   if (k === "twig") return <TwigMark size={14} className="rounded-[3px]" />;
   if (k === "gitlawb") return <GitlawbMark size={14} className="rounded-[3px]" />;
-  if (k === "stock") return <ChartCandlestick size={14} aria-hidden="true" className="shrink-0" />;
+
+  if (k === "museworld") {
+    // eslint-disable-next-line @next/next/no-img-element
+    return (
+      <img
+        src="/museworld-mark.png"
+        alt=""
+        width={14}
+        height={14}
+        className="shrink-0 rounded-[3px]"
+      />
+    );
+  }
+
+  if (k === "stock") {
+    return <ChartCandlestick size={14} aria-hidden="true" className="shrink-0" />;
+  }
+
   if (k === "eth" || k === "usdc") {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={k === "eth" ? "/brand/ethereum.svg" : "/brand/usdc.svg"} alt="" width={14} height={14} className="shrink-0" />;
+    return (
+      <img
+        src={k === "eth" ? "/brand/ethereum.svg" : "/brand/usdc.svg"}
+        alt=""
+        width={14}
+        height={14}
+        className="shrink-0"
+      />
+    );
   }
+
   return <CircleDollarSign size={14} aria-hidden="true" className="shrink-0" />;
 }
+
+
 
 function SubmitButton({
   chainLabel,

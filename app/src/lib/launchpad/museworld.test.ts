@@ -25,10 +25,26 @@ test("MUSEWORLD resolves on Base by address, with its logo; nowhere else", () =>
   assert.ok(listedQuoteAddresses("base").includes(MUSEWORLD_ADDRESS.toLowerCase()), "known, so the indexer does not treat it as unlisted");
 });
 
-test("MUSEWORLD is never offered in the launch form", () => {
-  for (const k of CHAIN_KEYS) assert.ok(!launchpad(k).quotes.some((q) => q.key === "museworld"), k);
+
+test("MUSEWORLD is offered on Base only", () => {
+  assert.ok(
+    launchpad("base").quotes.some((q) => q.key === "museworld"),
+    "MUSEWORLD should be available as a Base launch quote",
+  );
+
+  for (const k of CHAIN_KEYS.filter((k) => k !== "base")) {
+    assert.ok(
+      !launchpad(k).quotes.some((q) => q.key === "museworld"),
+      `${k}: MUSEWORLD must not be offered`,
+    );
+  }
+
   assert.deepEqual(MCAP_PRESETS.museworld, []);
-  assert.match(src("../../app/api/quotes/route.ts"), /launchpad\(chain\)\.quotes/, "the form's quote API lists the offered quotes only");
+  assert.match(
+    src("../../app/api/quotes/route.ts"),
+    /launchpad\(chain\)\.quotes/,
+    "the form's quote API lists the offered quotes only",
+  );
 });
 
 test("a fake MUSEWORLD at another address shows by address, not as ours", () => {

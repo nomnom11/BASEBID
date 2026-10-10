@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { CHAIN_IDS, CHAIN_KEYS, SITE_URL, chainKeyOf } from "@/lib/chainPublic";
 import { maybeDb } from "@/lib/db";
+import { LAUNCH_VISIBLE_FROM } from "@/lib/launchpad/visibility";
 import { CONFIGURED_CHAINS } from "@/lib/launchpad/config";
 import { staticSitemapEntries, tokenSitemapEntries, type TokenRow } from "@/lib/seo";
 
@@ -25,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         SELECT chain_id, token, block_time
         FROM bb_launches
         WHERE chain_id IN ${sql(CHAIN_KEYS.map((k) => CHAIN_IDS[k]))}
+        ${LAUNCH_VISIBLE_FROM ? sql`AND block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : sql``}
         ORDER BY block_time DESC
         LIMIT 1000
       `) as unknown as { chain_id: number; token: string; block_time: string | null }[];

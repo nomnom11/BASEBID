@@ -115,24 +115,56 @@ test("wallet markers retain the cached candle cutoff when a new trade arrives in
 
 test("wallet marker query parameterizes its snapshot cutoff and rejects non-finite cutoffs", async () => {
   const calls: { sql: string; values: unknown[] }[] = [];
-  const db = async (parts: TemplateStringsArray, ...values: unknown[]) => {
-    calls.push({ sql: parts.join("?"), values });
-    return [{ t: "1800000037", is_buy: true, quote: "7000000" }];
-  };
+
+const db = (parts: TemplateStringsArray, ...values: unknown[]) => {
+  const sqlParts: string[] = [];
+  const sqlValues: unknown[] = [];
+
+  for (let i = 0; i < parts.length; i++) {
+    sqlParts.push(parts[i]);
+
+    if (i < values.length) {
+      const value = values[i];
+
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        "__sqlFragment" in value
+      ) {
+        sqlParts.push("");
+      } else {
+        sqlParts.push("?");
+        sqlValues.push(value);
+      }
+    }
+  }
+
+  const sqlText = sqlParts.join("");
+
+  if (!sqlText.trim()) {
+    return { __sqlFragment: true, sql: "", values: [] };
+  }
+
+  calls.push({ sql: sqlText, values: sqlValues });
+
+  return Promise.resolve([
+    { t: "1800000037", is_buy: true, quote: "7000000" },
+  ]);
+};
   const compiled = ts.transpileModule(walletQuery, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exported = {} as { getWalletSwaps: (chain: string, token: string, wallet: string, asOf: number, limit?: number) => Promise<unknown[]> };
-  new Function("exports", "maybeDb", "chainIdOf", compiled)(exported, () => db, () => 8453);
+  new Function("exports", "maybeDb", "chainIdOf", "LAUNCH_VISIBLE_FROM", compiled)(exported, () => db, () => 8453, null);
   const token = `0x${"A".repeat(40)}`;
   const wallet = `0x${"B".repeat(40)}`;
   const rows = await exported.getWalletSwaps("base", token, wallet, 1_800_000_037, 900);
   assert.deepEqual(rows, [{ t: 1_800_000_037, is_buy: true, quote: "7000000" }]);
-  assert.deepEqual(calls[0].values, [8453, token.toLowerCase(), wallet.toLowerCase(), 1_800_000_037, 500]);
-  assert.match(calls[0].sql, /chain_id = \? AND token = \? AND trader = \?\s+AND block_time <= to_timestamp\(\?\)/);
-  assert.match(calls[0].sql, /ORDER BY block_number DESC, log_index DESC LIMIT \?/);
+  const queryCall = calls.find((call) => call.values.length > 0); assert.ok(queryCall); assert.deepEqual(queryCall.values, [8453, token.toLowerCase(), wallet.toLowerCase(), 1_800_000_037, 500]);
+  assert.match(queryCall.sql, /s\.chain_id = \? AND s\.token = \? AND s\.trader = \?\s+AND s\.block_time <= to_timestamp\(\?\)/);
+  assert.match(calls[0].sql, /ORDER BY s\.block_number DESC, s\.log_index DESC LIMIT \?/);
   for (const cutoff of [NaN, Infinity, -Infinity]) {
     assert.deepEqual(await exported.getWalletSwaps("base", token, wallet, cutoff), []);
   }
-  assert.equal(calls.length, 1, "invalid cutoffs must never reach SQL");
+  assert.equal(calls.filter((call) => call.values.length > 0).length, 1, "invalid cutoffs must never reach SQL");
 });
 
 test("candle API bounds whole buckets before fetching and returns the memoized snapshot time", () => {
@@ -147,8 +179,8 @@ test("candle API bounds whole buckets before fetching and returns the memoized s
 });
 
 test("OHLCV query scopes the chain and token and includes complete buckets through asOf", () => {
-  assert.match(candleQuery, /chain_id = \$\{chainIdOf\(chain\)\} AND token = \$\{token\.toLowerCase\(\)\}/);
-  assert.match(candleQuery, /block_time >= to_timestamp\(\$\{from\}\) AND block_time <= to_timestamp\(\$\{asOf\}\)/);
+  assert.match(candleQuery, /s\.chain_id = \$\{chainIdOf\(chain\)\} AND s\.token = \$\{token\.toLowerCase\(\)\}/);
+  assert.match(candleQuery, /s\.block_time >= to_timestamp\(\$\{from\}\) AND s\.block_time <= to_timestamp\(\$\{asOf\}\)/);
   assert.match(candleQuery, /array_agg\(p ORDER BY block_number, log_index\)/);
   assert.match(candleQuery, /array_agg\(p ORDER BY block_number DESC, log_index DESC\)/);
   assert.match(candleQuery, /sum\(v\)::text AS volume, count\(\*\)::int AS trades/);
@@ -156,9 +188,9 @@ test("OHLCV query scopes the chain and token and includes complete buckets throu
 });
 
 test("baseline query selects one prior indexed swap, scoped by chain and token in full chain order", () => {
-  assert.match(baselineQuery, /chain_id = \$\{chainIdOf\(chain\)\} AND token = \$\{token\.toLowerCase\(\)\}/);
+  assert.match(baselineQuery, /s\.chain_id = \$\{chainIdOf\(chain\)\} AND s\.token = \$\{token\.toLowerCase\(\)\}/);
   assert.match(baselineQuery, /block_time < to_timestamp\(\$\{from\}\)/);
-  assert.match(baselineQuery, /ORDER BY block_number DESC, log_index DESC LIMIT 1/);
+  assert.match(baselineQuery, /ORDER BY s\.block_number DESC, s\.log_index DESC LIMIT 1/);
   assert.match(baselineQuery, /quotePerToken\(BigInt\(rows\[0\]\.sqrt_price_x96\), quoteDecimals\) : null/);
   assert.doesNotMatch(baselineQuery, /sum\(|count\(|array_agg\(/);
 });

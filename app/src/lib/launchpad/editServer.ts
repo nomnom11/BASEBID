@@ -4,6 +4,7 @@ import { isAddress, type Address, type Hex } from "viem";
 import { publicClient } from "@/lib/chain";
 import { chainIdOf, type ChainKey } from "@/lib/chainPublic";
 import { maybeDb } from "@/lib/db";
+import { LAUNCH_VISIBLE_FROM } from "./visibility";
 import { EDIT_TTL_MS, buildEditMessage, isNonce, validateEdit, type EditFields } from "./editAuth";
 
 /**
@@ -29,7 +30,7 @@ export function rateLimited(key: string, max = 10, windowMs = 60_000): boolean {
 export async function issueNonce(chain: ChainKey, token: string, wallet: string): Promise<{ nonce: string; expiresAt: number } | null> {
   const db = maybeDb();
   if (!db) return null;
-  const launcher = await db<{ launcher: string }[]>`SELECT launcher FROM bb_launches WHERE chain_id = ${chainIdOf(chain)} AND token = ${token.toLowerCase()}`;
+  const launcher = await db<{ launcher: string }[]>`SELECT launcher FROM bb_launches WHERE chain_id = ${chainIdOf(chain)} AND token = ${token.toLowerCase()} ${LAUNCH_VISIBLE_FROM ? db`AND block_time >= ${LAUNCH_VISIBLE_FROM.toISOString()}::timestamptz` : db``}`;
   if (!launcher[0] || launcher[0].launcher !== wallet.toLowerCase()) return null; // only the creator gets a nonce
   // No wallet rate limit here: the nonce endpoint is unauthenticated (no
   // signature), so the launcher check only confirms the supplied wallet

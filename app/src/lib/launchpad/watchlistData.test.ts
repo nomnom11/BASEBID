@@ -253,7 +253,7 @@ test("launch lookup reuses shaping in one bounded query and gates holder counts 
   }, { unsafe: (value: string) => value });
   const output = ts.transpileModule(helper, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exported = {} as { getLaunchesByRefs: (refs: { chain: string; token: string }[], usd?: number | null) => Promise<{ holders: number | null; launch: unknown }[]> };
-  new Function("exports", "maybeDb", "withStocks", "chainIdOf", "shape", "SELECT", "SYNCED_FOREVER", output)(exported, () => db, async () => { warmed++; }, (chain: string) => chain === "base" ? 8453 : 4663, (row: unknown) => row, "SELECT l.* FROM bb_launches l", 9223372036854775807n);
+  new Function("exports", "maybeDb", "withStocks", "chainIdOf", "shape", "SELECT", "SYNCED_FOREVER", "LAUNCH_VISIBLE_FROM", output)(exported, () => db, async () => { warmed++; }, (chain: string) => chain === "base" ? 8453 : 4663, (row: unknown) => row, "SELECT l.* FROM bb_launches l", 9223372036854775807n, null);
   const ref = { chain: "base", token: TOKEN.toUpperCase() };
   assert.deepEqual(await exported.getLaunchesByRefs([]), []);
   await assert.rejects(exported.getLaunchesByRefs(Array(51).fill(ref)));
