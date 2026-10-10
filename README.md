@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://openlaunch.lol"><img src="brand/readme-banner.png" alt="OPENLAUNCH.LOL — Launch a token. Free. Open source. Liquidity locked forever." width="100%"></a>
+  <a href="https://github.com/nomnom11/BASEBID"><img src="brand/basebid-banner.jpg" alt="BASEBID — Token launchpad" width="100%"></a>
 </p>
 
 <p align="center"><b>Launch a token. Free. Open source. On Base, Robinhood Chain or Arc.</b></p>
