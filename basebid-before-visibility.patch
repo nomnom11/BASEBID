@@ -1,0 +1,923 @@
+diff --git a/app/package-lock.json b/app/package-lock.json
+index 498ed85..ba0e33b 100644
+--- a/app/package-lock.json
++++ b/app/package-lock.json
+@@ -32,7 +32,7 @@
+       "devDependencies": {
+         "@tailwindcss/postcss": "^4",
+         "@types/d3-force": "^3.0.10",
+-        "@types/node": "^20",
++        "@types/node": "^20.19.43",
+         "@types/react": "^19",
+         "@types/react-dom": "^19",
+         "eslint": "^9",
+@@ -1558,9 +1558,6 @@
+       "cpu": [
+         "arm"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1577,9 +1574,6 @@
+       "cpu": [
+         "arm64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1596,9 +1590,6 @@
+       "cpu": [
+         "ppc64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1615,9 +1606,6 @@
+       "cpu": [
+         "riscv64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1634,9 +1622,6 @@
+       "cpu": [
+         "s390x"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1653,9 +1638,6 @@
+       "cpu": [
+         "x64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1672,9 +1654,6 @@
+       "cpu": [
+         "arm64"
+       ],
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1691,9 +1670,6 @@
+       "cpu": [
+         "x64"
+       ],
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "LGPL-3.0-or-later",
+       "optional": true,
+       "os": [
+@@ -1710,9 +1686,6 @@
+       "cpu": [
+         "arm"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1735,9 +1708,6 @@
+       "cpu": [
+         "arm64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1760,9 +1730,6 @@
+       "cpu": [
+         "ppc64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1785,9 +1752,6 @@
+       "cpu": [
+         "riscv64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1810,9 +1774,6 @@
+       "cpu": [
+         "s390x"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1835,9 +1796,6 @@
+       "cpu": [
+         "x64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1860,9 +1818,6 @@
+       "cpu": [
+         "arm64"
+       ],
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -1885,9 +1840,6 @@
+       "cpu": [
+         "x64"
+       ],
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+@@ -2155,9 +2107,6 @@
+       "cpu": [
+         "arm64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2174,9 +2123,6 @@
+       "cpu": [
+         "arm64"
+       ],
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2193,9 +2139,6 @@
+       "cpu": [
+         "x64"
+       ],
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2212,9 +2155,6 @@
+       "cpu": [
+         "x64"
+       ],
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2623,9 +2563,6 @@
+         "arm64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2643,9 +2580,6 @@
+         "arm64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2663,9 +2597,6 @@
+         "x64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -2683,9 +2614,6 @@
+         "x64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3276,9 +3204,6 @@
+         "arm64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3293,9 +3218,6 @@
+         "arm64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3310,9 +3232,6 @@
+         "loong64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3327,9 +3246,6 @@
+         "loong64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3344,9 +3260,6 @@
+         "ppc64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3361,9 +3274,6 @@
+         "riscv64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3378,9 +3288,6 @@
+         "riscv64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3395,9 +3302,6 @@
+         "s390x"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3412,9 +3316,6 @@
+         "x64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -3429,9 +3330,6 @@
+         "x64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MIT",
+       "optional": true,
+       "os": [
+@@ -6285,9 +6183,6 @@
+         "arm64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MPL-2.0",
+       "optional": true,
+       "os": [
+@@ -6309,9 +6204,6 @@
+         "arm64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MPL-2.0",
+       "optional": true,
+       "os": [
+@@ -6333,9 +6225,6 @@
+         "x64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "glibc"
+-      ],
+       "license": "MPL-2.0",
+       "optional": true,
+       "os": [
+@@ -6357,9 +6246,6 @@
+         "x64"
+       ],
+       "dev": true,
+-      "libc": [
+-        "musl"
+-      ],
+       "license": "MPL-2.0",
+       "optional": true,
+       "os": [
+diff --git a/app/package.json b/app/package.json
+index a69c266..b69f925 100644
+--- a/app/package.json
++++ b/app/package.json
+@@ -36,7 +36,7 @@
+   "devDependencies": {
+     "@tailwindcss/postcss": "^4",
+     "@types/d3-force": "^3.0.10",
+-    "@types/node": "^20",
++    "@types/node": "^20.19.43",
+     "@types/react": "^19",
+     "@types/react-dom": "^19",
+     "eslint": "^9",
+diff --git a/app/src/app/(home)/page.tsx b/app/src/app/(home)/page.tsx
+index a9f2737..306b7fe 100644
+--- a/app/src/app/(home)/page.tsx
++++ b/app/src/app/(home)/page.tsx
+@@ -1,72 +1,153 @@
++
++
+ import type { Metadata } from "next";
+ import { cookies } from "next/headers";
++
+ import LaunchHero from "@/components/launchpad/LaunchHero";
+ import LaunchList from "@/components/launchpad/LaunchList";
+ import LiveRiver from "@/components/launchpad/LiveRiver";
+ import JustLaunched from "@/components/launchpad/JustLaunched";
+ import { PostsFeed } from "@/components/launchpad/Posts";
+ import { listFeed } from "@/lib/launchpad/postsServer";
+-import { VOLUME_WINDOWS, getLaunchFeed, getTrending, isTrendingSource, listLaunchesPage, parseSort, trendingFrom, withBoardTape, type VolumeWindow } from "@/lib/launchpad/queries";
++import {
++  VOLUME_WINDOWS,
++  getLaunchFeed,
++  getTrending,
++  isTrendingSource,
++  listLaunchesPage,
++  parseSort,
++  trendingFrom,
++  withBoardTape,
++  type VolumeWindow,
++} from "@/lib/launchpad/queries";
+ import { JUST_LAUNCHED_SIZE, PAGE_SIZE } from "@/lib/launchpad/paging";
+ import { ethUsd } from "@/lib/launchpad/ethPrice";
+ import { LAUNCHPAD_CONFIGURED, visibleChainOr } from "@/lib/launchpad/config";
+ import { dbConfigured } from "@/lib/db";
+ import { isFilter } from "@/lib/launchpad/search";
+ import { nowMs } from "@/lib/launchpad/time";
+-import { feedKey, inRiverWindow, riverCoverage } from "@/lib/launchpad/river";
++import {
++  feedKey,
++  inRiverWindow,
++  riverCoverage,
++} from "@/lib/launchpad/river";
+ import TrendingStrip from "@/components/launchpad/TrendingStrip";
+ import LaunchPill from "@/components/launchpad/LaunchPill";
+ import WhyFree from "@/components/launchpad/WhyFree";
+ import { MagicCard } from "@/components/vendor/magic-card";
+-import { LAYOUT_COOKIE, parseLayout } from "@/lib/launchpad/list-layout";
++import {
++  LAYOUT_COOKIE,
++  parseLayout,
++} from "@/lib/launchpad/list-layout";
+ 
+ export const dynamic = "force-dynamic";
+-// Title and description come from the root layout; ?sort= / ?chain= / ?window= / ?view= are all this one page.
+-export const metadata: Metadata = { alternates: { canonical: "/" } };
++export const metadata: Metadata = {
++  alternates: { canonical: "/" },
++};
+ 
+-/** The river starts from the newest events (getLaunchFeed's ceiling) and keeps the ones from the last 30 minutes. */
+ const RIVER_SEED = 100;
+ 
+-export default async function Home({ searchParams }: { searchParams: Promise<{ sort?: string; window?: string; chain?: string; filter?: string; view?: string }> }) {
++export default async function Home({
++  searchParams,
++}: {
++  searchParams: Promise<{
++    sort?: string;
++    window?: string;
++    chain?: string;
++    filter?: string;
++    view?: string;
++  }>;
++}) {
+   const sp = await searchParams;
++
+   const sort = parseSort(sp.sort, "live");
+-  const window: VolumeWindow = VOLUME_WINDOWS.includes(sp.window as VolumeWindow) ? (sp.window as VolumeWindow) : "all";
++  const window: VolumeWindow = VOLUME_WINDOWS.includes(
++    sp.window as VolumeWindow
++  )
++    ? (sp.window as VolumeWindow)
++    : "all";
++
+   const chain = visibleChainOr(sp.chain);
+   const filter = isFilter(sp.filter) ? sp.filter : null;
+   const usd = await ethUsd();
+-  const layout = parseLayout((await cookies()).get(LAYOUT_COOKIE)?.value);
+-  const listOpts = { sort, window, chain, filter, limit: PAGE_SIZE, ethUsd: usd };
+-  const [page, feed, fresh, posts, fetchedTrending] = await Promise.all([
+-    listLaunchesPage(listOpts),
+-    getLaunchFeed(RIVER_SEED, usd),
+-    listLaunchesPage({ sort: "new", limit: JUST_LAUNCHED_SIZE, ethUsd: usd }),
+-    listFeed(30),
+-    isTrendingSource(listOpts) ? null : getTrending(usd),
+-  ]);
+-  const trending = await withBoardTape(fetchedTrending ?? trendingFrom(page.items)); // the default view's first page doubles as the strip's candidates; the tapes are the cards' recent trades
++
++  const layout = parseLayout(
++    (await cookies()).get(LAYOUT_COOKIE)?.value
++  );
++
++  const listOpts = {
++    sort,
++    window,
++    chain,
++    filter,
++    limit: PAGE_SIZE,
++    ethUsd: usd,
++  };
++
++  const [page, feed, fresh, posts, fetchedTrending] =
++    await Promise.all([
++      listLaunchesPage(listOpts),
++      getLaunchFeed(RIVER_SEED, usd),
++      listLaunchesPage({
++        sort: "new",
++        limit: JUST_LAUNCHED_SIZE,
++        ethUsd: usd,
++      }),
++      listFeed(30),
++      isTrendingSource(listOpts) ? null : getTrending(usd),
++    ]);
++
++  const trending = await withBoardTape(
++    fetchedTrending ?? trendingFrom(page.items)
++  );
++
+   const now = nowMs();
+ 
+   return (
+     <>
+       <main className="bb-mid bb-page relative space-y-6 pb-16 sm:space-y-8">
+         <LaunchHero configured={LAUNCHPAD_CONFIGURED} />
+-        {/* what is hot first (names and numbers to act on), then the last half hour as it happens, then every launch */}
+-        <TrendingStrip initial={trending} serverNow={now} seenKeys={feed.filter((item) => item.kind === "swap").map(feedKey)} />
+-        <LiveRiver initial={feed.filter((item) => inRiverWindow(item, now))} recent={feed} serverNow={now} coveredSince={riverCoverage(feed, RIVER_SEED, now)} lastActivityAt={feed[0] ? new Date(feed[0].at).getTime() : 0} />
++
++        <TrendingStrip
++          initial={trending}
++          serverNow={now}
++          seenKeys={feed
++            .filter((item) => item.kind === "swap")
++            .map(feedKey)}
++        />
++
++        <LiveRiver
++          initial={feed.filter((item) => inRiverWindow(item, now))}
++          recent={feed}
++          serverNow={now}
++          coveredSince={riverCoverage(feed, RIVER_SEED, now)}
++          lastActivityAt={
++            feed[0] ? new Date(feed[0].at).getTime() : 0
++          }
++        />
++
+         <div className="grid items-start gap-x-8 gap-y-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+-          <MagicCard className="min-w-0 rounded-2xl"><LaunchList frame="rounded-[inherit]" initial={page.items} initialHasMore={page.hasMore} initialSort={sort} initialWindow={window} initialChain={chain} initialFilter={filter} initialView={sp.view === "watchlist" ? "watchlist" : "market"} initialLayout={layout} hasDb={dbConfigured()} serverNow={now} /></MagicCard>
+-          <aside aria-label="New launches and community" className="grid min-w-0 gap-4 md:grid-cols-2 xl:sticky xl:top-24 xl:grid-cols-1">
++          <aside
++            aria-label="New launches and community"
++            className="grid min-w-0 gap-4 md:grid-cols-2 xl:sticky xl:top-24 xl:grid-cols-1"
++          >
+             <JustLaunched initial={fresh.items} serverNow={now} />
++
+             <div className="min-w-0 space-y-4">
+               <PostsFeed initial={posts} compact />
+               <WhyFree />
+             </div>
+           </aside>
+         </div>
++
++      
++        
++        <div className="grid gap-4">
++          <div className="space-y-4">
++            <LaunchPill />
++          </div>
++        </div>
+       </main>
+-      {/* outside <main>: it is fixed to the screen, and as <main>'s last child it switched the spacing of the grid above it
+-          (space-y skips only the last child) every time it came or went, moving the page's height and the footer with it */}
+-      <LaunchPill />
+     </>
+   );
+ }
+diff --git a/app/src/components/launchpad/LaunchForm.tsx b/app/src/components/launchpad/LaunchForm.tsx
+index 9c0418c..a591256 100644
+--- a/app/src/components/launchpad/LaunchForm.tsx
++++ b/app/src/components/launchpad/LaunchForm.tsx
+@@ -465,7 +465,7 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
+         <ul className="space-y-1 text-xs text-warm-ink">
+           {errors.map((e) => (
+             <li key={e} className="flex gap-2">
+-              <span aria-hidden className="mt-[5px] size-1 shrink-0 rounded-full bg-warm" />
++              <span aria-hidden className="mt-1.25 size-1 shrink-0 rounded-full bg-warm" />
+               {e}
+             </li>
+           ))}
+@@ -558,11 +558,40 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
+                     {/* the picked quote key, not the resolved quote: with Stock chosen and no stock yet, the quote still falls back to the first one */}
+                     {quoteKey === "stock" ? (CHAIN_COPY[chain].stock?.pays ?? "") : quote.key === "usdg" || quote.key === "usdc" ? `Buyers pay with ${quote.symbol}; market cap and fees are in dollars.` : isBrandQuote ? `Buyers pay with ${quote.symbol}; fees are paid in ${quote.symbol}, or burned.` : "Buyers pay with ETH."}
+                   </p>
+-                  {brandQuote && quote.key !== brandQuote.key ? (
+-                    <button type="button" onClick={() => { setQuoteKey(brandQuote.key); setMcapPick(null); setCustomMcap(""); }} className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink motion-reduce:transition-none" title={`Pair with ${brandQuote.symbol} and your token carries the ${brandQuote.symbol} badge everywhere on the site`}>
+-                      Pair with {brandQuote.symbol}, get the <QuoteBrandBadge quoteKey={brandQuote.key} /> badge
+-                    </button>
+-                  ) : null}
++                  
++{brandQuote && quote.key !== brandQuote.key ? (
++  <button
++    type="button"
++    onClick={() => {
++      setQuoteKey(brandQuote.key);
++      setMcapPick(null);
++      setCustomMcap("");
++    }}
++    className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink motion-reduce:transition-none"
++    title={`Pair with ${brandQuote.symbol} and your token carries the ${brandQuote.symbol} badge everywhere on the site`}
++  >
++    Pair with {brandQuote.symbol}, get the{" "}
++    <QuoteBrandBadge quoteKey={brandQuote.key} /> badge
++  </button>
++) : null}
++
++{chain === "base" &&
++quote.key !== "museworld" &&
++cfg.quotes.some((q) => q.key === "museworld") ? (
++  <button
++    type="button"
++    onClick={() => {
++      setQuoteKey("museworld");
++      setMcapPick(null);
++      setCustomMcap("");
++    }}
++    className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink motion-reduce:transition-none"
++    title="Pair with MUSEWORLD and show the MUSEWORLD badge on your token"
++  >
++    Pair with MUSEWORLD, get the{" "}
++    <QuoteBrandBadge quoteKey="museworld" /> badge
++  </button>
++) : null}
+                 </div>
+               ) : null}
+               {isBrandQuote ? (
+@@ -964,7 +993,7 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
+       </form>
+ 
+       {/* the console: the preview, what the launch sets, and on wide screens the launch button, always in reach */}
+-      <aside className="lg:sticky lg:top-20 min-w-0 order-first lg:order-none">
++      <aside className="lg:sticky lg:top-20 min-w-0 order-first lg:order-0">
+         <div className={`${card} p-4`}>
+           <LaunchPreview row={previewRow} />
+           <div className="mt-4 flex items-center justify-between gap-2 border-t border-line pt-4">
+@@ -1026,14 +1055,42 @@ function Step({ n, done, last = false, icon, children }: { n: number; done: bool
+ function QuoteMark({ k }: { k: Quote["key"] }) {
+   if (k === "twig") return <TwigMark size={14} className="rounded-[3px]" />;
+   if (k === "gitlawb") return <GitlawbMark size={14} className="rounded-[3px]" />;
+-  if (k === "stock") return <ChartCandlestick size={14} aria-hidden="true" className="shrink-0" />;
++
++  if (k === "museworld") {
++    // eslint-disable-next-line @next/next/no-img-element
++    return (
++      <img
++        src="/museworld-mark.png"
++        alt=""
++        width={14}
++        height={14}
++        className="shrink-0 rounded-[3px]"
++      />
++    );
++  }
++
++  if (k === "stock") {
++    return <ChartCandlestick size={14} aria-hidden="true" className="shrink-0" />;
++  }
++
+   if (k === "eth" || k === "usdc") {
+     // eslint-disable-next-line @next/next/no-img-element
+-    return <img src={k === "eth" ? "/brand/ethereum.svg" : "/brand/usdc.svg"} alt="" width={14} height={14} className="shrink-0" />;
++    return (
++      <img
++        src={k === "eth" ? "/brand/ethereum.svg" : "/brand/usdc.svg"}
++        alt=""
++        width={14}
++        height={14}
++        className="shrink-0"
++      />
++    );
+   }
++
+   return <CircleDollarSign size={14} aria-hidden="true" className="shrink-0" />;
+ }
+ 
++
++
+ function SubmitButton({
+   chainLabel,
+   configured,
+diff --git a/app/src/components/launchpad/LaunchHero.tsx b/app/src/components/launchpad/LaunchHero.tsx
+index 217cab3..7598708 100644
+--- a/app/src/components/launchpad/LaunchHero.tsx
++++ b/app/src/components/launchpad/LaunchHero.tsx
+@@ -45,11 +45,11 @@ export default function LaunchHero({ configured }: { configured: boolean }) {
+           </h1>
+           <p className={HERO.copy}>
+             {/* the brand as a plain word, once, above the fold: the title and footer alone read as a domain */}
+-            <Link href="/about" className="font-semibold text-ink hover:text-brand underline decoration-line-strong underline-offset-4">openlaunch</Link> is the free, open-source launchpad on Base, Robinhood Chain and Arc. One transaction: your token, a Uniswap v4 pool, and a liquidity position locked forever. 100% of the supply goes into the pool at launch. You only pay gas.
++            <Link href="/about" className="font-semibold text-ink hover:text-brand underline decoration-line-strong underline-offset-4">Basebid</Link> is the free, open-source launchpad on Base, Robinhood Chain and Arc. One transaction: your token, a Uniswap v4 pool, and a liquidity position locked forever. 100% of the supply goes into the pool at launch. You only pay gas.
+           </p>
+           <div className={HERO.actions}>
+             {/* the header watches this id: while it is on screen the header CTA stays quiet (one filled blue per screen) */}
+-            <HeroCtaLink id="hero-cta" href="/launch" className="group relative inline-flex min-h-12 min-w-0 max-sm:min-w-[10.5rem] flex-1 items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-brand py-1.5 pr-4 pl-2 text-sm font-semibold sm:min-h-13 sm:gap-3 sm:py-2 sm:pl-2.5 sm:text-[15px] text-inverse shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_14px_34px_-14px_var(--color-glow)] transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-brand-strong hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_20px_40px_-14px_var(--color-glow)] active:translate-y-0 active:scale-[0.98] motion-reduce:transition-colors motion-reduce:hover:translate-y-0 sm:flex-none sm:pr-7">
++            <HeroCtaLink id="hero-cta" href="/launch" className="group relative inline-flex min-h-12 min-w-0 max-sm:min-w-42 flex-1 items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-brand py-1.5 pr-4 pl-2 text-sm font-semibold sm:min-h-13 sm:gap-3 sm:py-2 sm:pl-2.5 sm:text-[15px] text-inverse shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_14px_34px_-14px_var(--color-glow)] transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-brand-strong hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_20px_40px_-14px_var(--color-glow)] active:translate-y-0 active:scale-[0.98] motion-reduce:transition-colors motion-reduce:hover:translate-y-0 sm:flex-none sm:pr-7">
+               {/* the rocket lifts off on hover */}
+               <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-xl bg-inverse/15 transition-transform sm:size-9 duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:-rotate-12 motion-reduce:transition-none"><Rocket size={17} strokeWidth={2.2} /></span>
+               <span className="truncate">Launch a token</span>
+diff --git a/app/src/components/launchpad/LaunchMachine.tsx b/app/src/components/launchpad/LaunchMachine.tsx
+index 18b08cd..d17b384 100644
+--- a/app/src/components/launchpad/LaunchMachine.tsx
++++ b/app/src/components/launchpad/LaunchMachine.tsx
+@@ -126,7 +126,18 @@ export default function LaunchMachine({ coin = null, eyebrow }: { coin?: { key:
+             {[-40, -30, -20, -10, 0, 10, 20, 30, 40].map((n) => <path key={n} d={`M${280 + n} ${106 + 23 * Math.sqrt(1 - (n / 52) ** 2)}v-12`} className={styles.tokenRidge} />)}
+             <ellipse cx="280" cy="88" rx="52" ry="23" className={styles.tokenTop} />
+             <ellipse cx="280" cy="88" rx="43" ry="18" className={styles.tokenRing} />
+-            <g transform="matrix(.86 .38 -.86 .38 280 87)"><path d="M-22 -14H-4V14H-22ZM6 -14V14H24" className={styles.tokenMark} /></g>
++            <g transform="translate(280 88) scale(1 .4186)">
++  <image
++    href="/basebid-logo.png"
++    x="-43"
++    y="-43"
++    width="86"
++    height="86"
++    preserveAspectRatio="xMidYMid meet"
++  />
++</g>
++
++
+             {/* a real launch's picture, upright and foreshortened to the coin's inner ring (43 x 18); it rides the coin down into the pool */}
+             {coin ? (
+               <g transform="translate(280 88) scale(1 .4186)">
+diff --git a/app/src/components/launchpad/Mark.tsx b/app/src/components/launchpad/Mark.tsx
+index 29a9113..cb93e68 100644
+--- a/app/src/components/launchpad/Mark.tsx
++++ b/app/src/components/launchpad/Mark.tsx
+@@ -1,26 +1,48 @@
+ /**
+- * The openlaunch mark: brand-blue tile, white geometric "oL" — same family as
+- * the old basebid "b" tile. Plain SVG: usable in server components, the OG
+- * image and favicons. `tile=false` draws the letters alone (ink/brand) for
+- * light backgrounds.
++ * Basebid logo image.
+  */
+-export default function Mark({ size = 24, className = "", title = "openlaunch", tile = true, color = "#FFFFFF" }: { size?: number; className?: string; title?: string; tile?: boolean; color?: string }) {
+-  const fg = tile ? "#FFFFFF" : color;
++export default function Mark({
++  size = 24,
++  className = "",
++  title = "Basebid",
++  tile = true,
++  color = "#FFFFFF",
++}: {
++  size?: number;
++  className?: string;
++  title?: string;
++  tile?: boolean;
++  color?: string;
++}) {
+   return (
+-    <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" className={className} role="img" aria-label={title}>
+-      {tile ? <rect width="32" height="32" rx="7" fill="#0052FF" /> : null}
+-      <path fill={fg} fillRule="evenodd" d="M10.5 13a6.5 6.5 0 1 1 0 13a6.5 6.5 0 1 1 0-13ZM10.5 16.4a3.1 3.1 0 1 0 0 6.2a3.1 3.1 0 1 0 0-6.2Z" />
+-      <rect x="19.5" y="6" width="4.6" height="20" rx="1.4" fill={fg} />
+-      <rect x="19.5" y="21.4" width="8.2" height="4.6" rx="1.4" fill={fg} />
+-    </svg>
++    <img
++      src="/basebid-logo.png"
++      width={size}
++      height={size}
++      alt={title}
++      className={className}
++      style={{
++        objectFit: "contain",
++        borderRadius: tile ? "7px" : undefined,
++      }}
++    />
+   );
+ }
+ 
+-/** Wordmark: "openlaunch" + ".lol" in brand blue. */
+-export function Wordmark({ className = "", size = 15 }: { className?: string; size?: number }) {
++/** Wordmark: "Basebid" + ".lol" in brand blue. */
++export function Wordmark({
++  className = "",
++  size = 15,
++}: {
++  className?: string;
++  size?: number;
++}) {
+   return (
+-    <span className={`font-semibold tracking-tight text-ink ${className}`} style={{ fontSize: size }}>
+-      openlaunch<span className="text-brand">.lol</span>
++    <span
++      className={`font-semibold tracking-tight text-ink ${className}`}
++      style={{ fontSize: size }}
++    >
++      Basebid<span className="text-brand">.lol</span>
+     </span>
+   );
+-}
++}
+\ No newline at end of file
+diff --git a/app/src/components/sections/about.test.ts b/app/src/components/sections/about.test.ts
+index ecadbbf..5d733e1 100644
+--- a/app/src/components/sections/about.test.ts
++++ b/app/src/components/sections/about.test.ts
+@@ -26,8 +26,8 @@ test("about page states facts, not value claims", () => {
+ });
+ 
+ test("the brand appears as a plain word above the fold and links to the entity page", () => {
+-  assert.match(hero, /<Link href="\/about"[^>]*>openlaunch<\/Link> is the free, open-source launchpad/);
+-  assert.ok(footer.includes('{ href: "/about", label: "About openlaunch" }'), "footer links the about page");
+-  assert.match(llms, /> openlaunch \(\$\{BRAND_DOMAIN\}\) is an open-source/);
++  assert.match(hero, /<Link href="\/about"[^>]*>Basebid<\/Link> is the free, open-source launchpad/);
++  assert.ok(footer.includes('{ href: "/about", label: "About Basebid" }'), "footer links the about page");
++  assert.match(llms, /> Basebid \(\$\{BRAND_DOMAIN\}\) is an open-source/);
+   assert.match(llms, /About page: \$\{SITE_URL\}\/about/);
+ });
+diff --git a/app/src/lib/brand.test.ts b/app/src/lib/brand.test.ts
+index 1e84a81..2d7dd6b 100644
+--- a/app/src/lib/brand.test.ts
++++ b/app/src/lib/brand.test.ts
+@@ -1,3 +1,4 @@
++/// <reference types="node" />
+ import assert from "node:assert/strict";
+ import test from "node:test";
+ import { BRAND, BRAND_DOMAIN, BRAND_X, SITE_DESCRIPTION, SITE_TITLE, SOCIAL_DESCRIPTION } from "./brand.ts";
+diff --git a/app/src/lib/brand.ts b/app/src/lib/brand.ts
+index 8ad113a..8903b3d 100644
+--- a/app/src/lib/brand.ts
++++ b/app/src/lib/brand.ts
+@@ -1,9 +1,9 @@
+ /** Single source of truth for the brand. Rename here, nowhere else. */
+-export const BRAND = "openlaunch";
++export const BRAND = "Basebid";
+ export const BRAND_TLD = ".lol";
+ export const BRAND_DOMAIN = `${BRAND}${BRAND_TLD}`; // openlaunch.lol
+-/** @openlaunchlol and the openlaunchlol GitHub org were squatted after the rename — never link them. */
+-export const BRAND_X = "openlaunch_lol"; // the official account (never link the look-alike handles)
++/** @Basebidlol /** Official BASEBID brand accounts and repository. */
++export const BRAND_X = "Basebid_lol"; // the official account (never link the look-alike handles)
+ export const BRAND_GITHUB = "https://github.com/Twigpine/openlaunch"; // MIT, contracts + site
+ export const TAGLINE = "launch a token. Free. Open source. On Base, Robinhood Chain or Arc.";
+ /**
+@@ -12,7 +12,7 @@ export const TAGLINE = "launch a token. Free. Open source. On Base, Robinhood Ch
+  *   SITE_DESCRIPTION ≤ 155 chars (Google snippet);
+  *   SOCIAL_DESCRIPTION ≤ 125 chars (OpenGraph / X previews, mobile-safe).
+  */
+-/** Leads with the bare brand word: "openlaunch" is the query to win, and Google tokenises the domain as two words. */
++/** Leads with the bare brand word: "Basebid" is the query to win, and Google tokenises the domain as two words. */
+ export const SITE_TITLE = `${BRAND}: free token launchpad on Base, Robinhood & Arc`;
+ export const SITE_DESCRIPTION = "Launch a token in one transaction on Base, Robinhood Chain or Arc. Zero platform fee, open source, 100% of supply locked as Uniswap v4 liquidity forever.";
+ export const SOCIAL_DESCRIPTION = "Zero-fee, open-source token launchpad. One transaction, liquidity locked forever. Base + Robinhood Chain + Arc.";
+diff --git a/app/src/lib/launchpad/config.ts b/app/src/lib/launchpad/config.ts
+index 7c9bd05..663a3e8 100644
+--- a/app/src/lib/launchpad/config.ts
++++ b/app/src/lib/launchpad/config.ts
+@@ -71,7 +71,7 @@ const V4_BY_CHAIN: Record<ChainKey, V4> = {
+   },
+ };
+ /** Quote assets offered per chain, first = default. On Base TWIG took GITLAWB's place (GITLAWB stays an official quote below). */
+-const QUOTES_BY_CHAIN: Record<ChainKey, Quote[]> = { base: [ETH, TWIG], robinhood: [USDG, ETH, GITLAWB_RH], arc: [USDC_ARC] };
++const QUOTES_BY_CHAIN: Record<ChainKey, Quote[]> = { base: [ETH, TWIG,MUSEWORLD], robinhood: [USDG, ETH, GITLAWB_RH], arc: [USDC_ARC] };
+ /**
+  * Official quotes: known, badged and priced wherever a launch paired with them is listed, but NEVER offered in the
+  * launch form. Kept out of QUOTES_BY_CHAIN on purpose. GITLAWB on Base: the form offers TWIG (its 1:1 wrapper) instead,
+@@ -216,7 +216,7 @@ export const FEE_PRESETS = [
+ ] as const;
+ 
+ /** Starting market cap presets per quote (fully diluted, in quote units). */
+-export const MCAP_PRESETS: Record<Quote["key"], number[]> = { eth: [1, 5, 10, 25], usdg: [5_000, 10_000, 25_000, 100_000], usdc: [5_000, 10_000, 25_000, 100_000], gitlawb: [] /* derived from the live price */, twig: [] /* derived from the live price */, museworld: [] /* not offered in the form */, stock: [] /* derived from the live price */, other: [] /* never offered */ };
++export const MCAP_PRESETS: Record<Quote["key"], number[]> = { eth: [1, 5, 10, 25], usdg: [5_000, 10_000, 25_000, 100_000], usdc: [5_000, 10_000, 25_000, 100_000], gitlawb: [] /* derived from the live price */, twig: [] /* derived from the live price */,museworld: [5000, 10000, 25000, 100000], stock: [] /* derived from the live price */, other: [] /* never offered */ };
+ /** Buy amount presets per quote. */
+ export const BUY_PRESETS: Record<Quote["key"], string[]> = { eth: ["0.01", "0.05", "0.1", "0.5"], usdg: ["5", "25", "100", "500"], usdc: ["5", "25", "100", "500"], gitlawb: ["100000", "500000", "1000000", "5000000"], twig: ["100000", "500000", "1000000", "5000000"] /* one TWIG = one GITLAWB */, museworld: ["50000", "100000", "500000", "1000000"], stock: ["0.1", "0.5", "1", "5"], other: [] /* unknown token, unknown scale */ };
+ 
+diff --git a/app/src/lib/launchpad/museworld.test.ts b/app/src/lib/launchpad/museworld.test.ts
+index b43e936..aed516d 100644
+--- a/app/src/lib/launchpad/museworld.test.ts
++++ b/app/src/lib/launchpad/museworld.test.ts
+@@ -25,10 +25,26 @@ test("MUSEWORLD resolves on Base by address, with its logo; nowhere else", () =>
+   assert.ok(listedQuoteAddresses("base").includes(MUSEWORLD_ADDRESS.toLowerCase()), "known, so the indexer does not treat it as unlisted");
+ });
+ 
+-test("MUSEWORLD is never offered in the launch form", () => {
+-  for (const k of CHAIN_KEYS) assert.ok(!launchpad(k).quotes.some((q) => q.key === "museworld"), k);
++
++test("MUSEWORLD is offered on Base only", () => {
++  assert.ok(
++    launchpad("base").quotes.some((q) => q.key === "museworld"),
++    "MUSEWORLD should be available as a Base launch quote",
++  );
++
++  for (const k of CHAIN_KEYS.filter((k) => k !== "base")) {
++    assert.ok(
++      !launchpad(k).quotes.some((q) => q.key === "museworld"),
++      `${k}: MUSEWORLD must not be offered`,
++    );
++  }
++
+   assert.deepEqual(MCAP_PRESETS.museworld, []);
+-  assert.match(src("../../app/api/quotes/route.ts"), /launchpad\(chain\)\.quotes/, "the form's quote API lists the offered quotes only");
++  assert.match(
++    src("../../app/api/quotes/route.ts"),
++    /launchpad\(chain\)\.quotes/,
++    "the form's quote API lists the offered quotes only",
++  );
+ });
+ 
+ test("a fake MUSEWORLD at another address shows by address, not as ours", () => {

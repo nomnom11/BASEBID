@@ -1,4 +1,3 @@
-import HomeLaunchCountdown from "./HomeLaunchCountdown";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Play, Rocket, Scale, ShieldCheck } from "lucide-react";
 import LaunchMechanism from "./LaunchMechanism";
@@ -68,7 +67,6 @@ export default function LaunchHero({ configured }: { configured: boolean }) {
             role="timer"
           >
             <p className="text-xs text-muted">Launch available in</p>
-            <HomeLaunchCountdown />
           </div>
 ```
           {/* the proofs: three small chips, each one a place to check the claim */}
