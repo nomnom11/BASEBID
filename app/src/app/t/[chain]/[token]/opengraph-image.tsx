@@ -30,7 +30,7 @@ function logoDataUrl(publicPath: string): Promise<string | null> {
   return p;
 }
 
-export const alt = "token on openlaunch.lol";
+export const alt = "token on BASEBID.lol";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const dynamic = "force-dynamic";
