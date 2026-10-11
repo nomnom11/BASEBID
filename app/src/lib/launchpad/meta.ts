@@ -40,9 +40,11 @@ export class MetaConflict extends Error {
  */
 export async function saveMeta(m: Input): Promise<{ uri: string; token: Address }> {
   const pool = maybeDb();
-  if (!pool) throw new Error("db unconfigured");
-  const uri = uriFor(m.launcher, m.meta_key);
+ const uri = uriFor(m.launcher, m.meta_key);
   const token = (await predictToken(m, uri)).toLowerCase() as Address;
+  if (!pool) {
+  return { uri, token };
+}
   const cid = chainIdOf(m.chain);
   const launcher = m.launcher.toLowerCase();
   // Ownership is per (chain, launcher, meta_key) — the thing the public URI is keyed by — not just per
