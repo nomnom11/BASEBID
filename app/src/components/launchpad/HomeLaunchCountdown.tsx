@@ -3,19 +3,19 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "basedbid:launch-countdown:v1";
 const THREE_HOURS = 3 * 60 * 60 * 1000;
 
 export default function HomeLaunchCountdown() {
   const [remaining, setRemaining] = useState(THREE_HOURS);
 
   useEffect(() => {
-    let endAt = Number(localStorage.getItem(STORAGE_KEY));
+  let interval: number | undefined;
 
-    if (!Number.isFinite(endAt) || endAt <= 0) {
-      endAt = Date.now() + THREE_HOURS;
-      localStorage.setItem(STORAGE_KEY, String(endAt));
-    }
+  async function loadCountdown() {
+    const res = await fetch("/api/countdown");
+    const data = await res.json();
+
+    const endAt = new Date(data.endsAt).getTime();
 
     const update = () => {
       setRemaining(Math.max(0, endAt - Date.now()));
@@ -23,9 +23,17 @@ export default function HomeLaunchCountdown() {
 
     update();
 
-    const interval = window.setInterval(update, 1000);
-    return () => window.clearInterval(interval);
-  }, []);
+    interval = window.setInterval(update, 1000);
+  }
+
+  loadCountdown();
+
+  return () => {
+    if (interval) {
+      window.clearInterval(interval);
+    }
+  };
+}, []);
 
   const hours = String(
     Math.floor(remaining / 3600000)

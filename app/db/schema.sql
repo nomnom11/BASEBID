@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS bb_migrations (
   applied_at    timestamptz NOT NULL DEFAULT now(),
   applied_by    text
 );
+-- Global launch countdown: one persistent end time shared by all visitors.
+CREATE TABLE IF NOT EXISTS bb_global_countdown (
+  id       integer PRIMARY KEY CHECK (id = 1),
+  ends_at  timestamptz NOT NULL
+);
 
 -- ── launchpad ────────────────────────────────────────────────────────────────
 -- Index of the fee-free LaunchFactory / LaunchLocker (contracts/docs/LAUNCHPAD.md)
@@ -393,3 +398,9 @@ ALTER TABLE bb_launch_swaps ADD COLUMN IF NOT EXISTS trader_via text;
 ALTER TABLE bb_launch_swaps ADD COLUMN IF NOT EXISTS tx_from text;
 -- its indexes (the unchecked set, receipt-pending calls, one wallet's trades) are in db/concurrent-indexes.sql: built
 -- concurrently after this transaction, so no query on swaps waits for them
+-- global launch countdown
+CREATE TABLE IF NOT EXISTS bb_global_countdown (
+  id integer PRIMARY KEY DEFAULT 1,
+  ends_at timestamptz NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
