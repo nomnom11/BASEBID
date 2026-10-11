@@ -4,36 +4,36 @@
  * both served by GET /api/launch/image/[key] (same-origin fallback URL for any stored key).
  */
 import "server-only";
+import { get, put } from "@vercel/blob";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { imageUrlFor } from "./images";
 
-type Store = { kind: "s3"; client: S3Client; bucket: string; publicBase: string } | { kind: "local"; dir: string; publicBase: string } | { kind: "off" };
+type Store = { kind: "blob"; publicBase: string } | { kind: "s3"; client: S3Client; bucket: string; publicBase: string } | { kind: "local"; dir: string; publicBase: string } | { kind: "off" };
 
 let cached: Store | null = null;
 
 function config(): Store {
   if (cached) return cached;
+  const host = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  const site = (process.env.NEXT_PUBLIC_SITE_URL || (host ? "https://" + host : "http://localhost:3000")).replace(/\/+$/, "");
+  const publicBase = process.env.IMAGE_PUBLIC_BASE || site + "/api/launch/image";
+  if (process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL) {
+    cached = { kind: "blob", publicBase };
+    return cached;
+  }
   const bucket = process.env.BUCKET_NAME || process.env.IMAGE_BUCKET;
   const endpoint = process.env.AWS_ENDPOINT_URL_S3;
   const key = process.env.AWS_ACCESS_KEY_ID;
   const secret = process.env.AWS_SECRET_ACCESS_KEY;
   if (bucket && endpoint && key && secret) {
-    // Same-origin by default: the app reads the object with its credentials and serves it immutable.
-    // Tigris' bucket-level public flag proved unreliable (403 even with public-read ACLs), and our own
-    // domain in on-chain metadata URIs is the more durable choice anyway. IMAGE_PUBLIC_BASE overrides.
-    const site = (process.env.NEXT_PUBLIC_SITE_URL || "https://openlaunch.lol").replace(/\/+$/, "");
-    const publicBase = process.env.IMAGE_PUBLIC_BASE || `${site}/api/launch/image`;
     cached = { kind: "s3", client: new S3Client({ region: process.env.AWS_REGION || "auto", endpoint, forcePathStyle: false, credentials: { accessKeyId: key, secretAccessKey: secret } }), bucket, publicBase };
   } else if (process.env.IMAGE_STORE === "local") {
-    const site = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, "");
-    cached = { kind: "local", dir: path.join(process.cwd(), ".uploads"), publicBase: `${site}/api/launch/image` };
+    cached = { kind: "local", dir: path.join(process.cwd(), ".uploads"), publicBase };
   } else cached = { kind: "off" };
   return cached;
 }
-
-/** Public base URL of our image host (null when uploads are off). Used by the OG card allow-list. */
 export function imagePublicBase(): string | null {
   const c = config();
   return c.kind === "off" ? null : c.publicBase;
@@ -56,8 +56,11 @@ export function imageUploadsEnabled(): boolean {
 export async function putImage(key: string, body: Buffer): Promise<string> {
   const c = config();
   if (c.kind === "off") throw new Error("image uploads are not configured");
+  if (c.kind === "blob") {
+    await put(key, body, { access: "public", contentType: "image/webp", cacheControlMaxAge: 31536000, addRandomSuffix: false, allowOverwrite: false });
+    return imageUrlFor(c.publicBase, key);
+  }
   if (c.kind === "s3") {
-    // ACL per object: readable even if the bucket-level public flag lags or is lost
     await c.client.send(new PutObjectCommand({ Bucket: c.bucket, Key: key, Body: body, ACL: "public-read", ContentType: "image/webp", CacheControl: "public, max-age=31536000, immutable", ContentDisposition: "inline" }));
     return imageUrlFor(c.publicBase, key);
   }
@@ -66,7 +69,6 @@ export async function putImage(key: string, body: Buffer): Promise<string> {
   await writeFile(file, body);
   return imageUrlFor(c.publicBase, key);
 }
-
 const READ_TIMEOUT_MS = 3_000;
 type ObjectClient = Pick<S3Client, "send">;
 
@@ -102,8 +104,11 @@ export async function readImage(key: string): Promise<Buffer | null> {
   if (c.kind === "off" || !KEY_RE.test(key)) return null;
   try {
     if (c.kind === "local") return await readFile(path.join(c.dir, key));
+    if (c.kind === "blob") {
+      const result = await get(key, { access: "public" });
+      if (!result || result.statusCode !== 200 || !result.stream) return null;
+      return Buffer.from(await new Response(result.stream).arrayBuffer());
+    }
     return await readObject(c.client, c.bucket, key);
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
