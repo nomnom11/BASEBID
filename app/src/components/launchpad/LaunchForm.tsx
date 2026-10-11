@@ -541,13 +541,14 @@ valid={valid && countdownExpired}        phase={phase}
               <div className="grid sm:grid-cols-3 gap-2">
                 {CHAIN_KEYS.map((k) => {
                   const active = chain === k;
-                  const ok = launchpad(k).configured;
+                  const ok = k === "base" && launchpad(k).configured;
                   return (
                     <button
                       type="button"
                       key={k}
                       disabled={!ok}
                       onClick={() => {
+                        if (!ok) return;
                         if (k === chain) return; // the active chain: nothing to switch, nothing to reset
                         setChain(k);
                         setQuoteKey(launchpad(k).quotes[0].key);
