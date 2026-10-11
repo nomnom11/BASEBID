@@ -173,6 +173,23 @@ async function firstBuy(ctx: FirstBuyCtx, tokenAddr: Address, launchHash: Hex, a
 
 export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = DEFAULT_CHAIN }: { ethUsd: number | null; gitlawbUsd?: number | null; initialChain?: ChainKey }) {
   const router = useRouter();
+  const [countdownRemaining, setCountdownRemaining] = useState(10800000);
+const countdownExpired = countdownRemaining <= 0;
+
+useEffect(() => {
+  const key = "basedbid:launch-countdown:v1";
+  let endAt = Number(localStorage.getItem(key));
+
+  if (!Number.isFinite(endAt) || endAt <= 0) {
+    endAt = Date.now() + 10800000;
+    localStorage.setItem(key, String(endAt));
+  }
+
+  const update = () => setCountdownRemaining(Math.max(0, endAt - Date.now()));
+  update();
+  const timer = window.setInterval(update, 1000);
+  return () => window.clearInterval(timer);
+}, []);
   const [chain, setChain] = useState<ChainKey>(initialChain);
   const cfg = launchpad(chain);
   const CHAIN = CHAINS[chain];
@@ -347,7 +364,7 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
   const hasRow = (payout: string) => rows.some((r) => r.payout.trim().toLowerCase() === payout.toLowerCase());
 
   async function launch() {
-    if (!valid || !address || !cfg.factory || startTick === null) return;
+  if (!countdownExpired || !valid || !address || !cfg.factory || startTick === null) return;
     const FACTORY_ADDRESS = cfg.factory;
     let salt = saltRef.current ?? (saltRef.current = randomSalt());
     let metaKey = metaKeyRef.current ?? (metaKeyRef.current = randomSalt());
@@ -456,6 +473,21 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
   // wide screens and the last step shows it on phones; CSS draws one copy at a time.
   const action = (
     <div className="space-y-3">
+      ```tsx
+      <div className="rounded-xl border border-line bg-card px-4 py-3" role="timer">
+        <p className="text-xs text-muted">Launch available in</p>
+        <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-ink tnum">
+          {String(Math.floor(countdownRemaining / 3600000)).padStart(2, "0")}:
+          {String(Math.floor((countdownRemaining % 3600000) / 60000)).padStart(2, "0")}:
+          {String(Math.floor((countdownRemaining % 60000) / 1000)).padStart(2, "0")}
+        </p>
+        <p className="mt-1 text-xs text-muted">
+          {countdownExpired
+            ? "Timer complete — you can launch manually."
+            : "Refreshing the page will not reset the timer."}
+        </p>
+      </div>
+```
       {quoteKey === "stock" && !stock ? (
         <div className="rounded-xl border border-warm/40 bg-warm-soft px-3.5 py-2.5 text-xs text-warm-ink font-semibold" role="status">
           {STOCK_PICK_MESSAGE}
@@ -477,8 +509,7 @@ export default function LaunchForm({ ethUsd, gitlawbUsd = null, initialChain = D
         connected={isConnected}
         onChain={onChain}
         connecting={switching}
-        valid={valid}
-        phase={phase}
+valid={valid && countdownExpired}        phase={phase}
         onConnect={() => setPickerOpen(true)}
         onSwitch={() => void switchChainAsync({ chainId: CHAIN.id })}
         label={initialBuyRaw ? "Launch + first buy" : "Launch for free, gas only"}

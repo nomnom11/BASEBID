@@ -1,3 +1,4 @@
+import HomeLaunchCountdown from "./HomeLaunchCountdown";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Play, Rocket, Scale, ShieldCheck } from "lucide-react";
 import LaunchMechanism from "./LaunchMechanism";
@@ -61,6 +62,15 @@ export default function LaunchHero({ configured }: { configured: boolean }) {
               <span aria-hidden="true" className="hidden truncate sm:inline">See how it works</span>
             </Link>
           </div>
+          ```tsx
+          <div
+            className="mt-4 rounded-xl border border-line bg-card px-4 py-3"
+            role="timer"
+          >
+            <p className="text-xs text-muted">Launch available in</p>
+            <HomeLaunchCountdown />
+          </div>
+```
           {/* the proofs: three small chips, each one a place to check the claim */}
           <ul className={HERO.proofs}>
             <li><a href={`${BRAND_GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className={proof}><Scale size={14} aria-hidden="true" className="text-muted" />MIT licensed</a></li>
