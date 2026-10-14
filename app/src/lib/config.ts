@@ -9,7 +9,7 @@ function intEnv(name: string, fallback: number): number {
 import type { ChainKey } from "./chainKeys.ts";
 
 // ── indexer ──────────────────────────────────────────────────────────────────
-export const SYNC_CHUNK_BLOCKS = 100n;
+export const SYNC_CHUNK_BLOCKS = 10n;
 export const SYNC_MAX_CHUNKS_PER_CALL = 12;
 /** Poller overlap: every run re-scans this many blocks behind the cursor (default 50). */
 export function syncOverlapBlocks(): bigint {
