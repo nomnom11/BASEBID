@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   // page without its own (launch, rules, feed, agents) and told search engines they were duplicates
   // of the home page. Each indexable page declares its own canonical.
   verification: siteVerification(process.env),
+  other: {
+    "virtual-protocol-site-verification": "c3824fca1d0926764c976f1eab6fe89a",
+  },
   openGraph: { siteName: BRAND_DOMAIN, title: TITLE, description: SOCIAL_DESCRIPTION, type: "website", url: SITE_URL },
   twitter: { card: "summary_large_image", site: `@${BRAND_X}`, title: TITLE, description: SOCIAL_DESCRIPTION },
 };
